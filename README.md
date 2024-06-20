@@ -8,3 +8,6 @@ and want to try to replicate that functionality for helix, which I think looks v
 ## References
 
 [What to do until a tree plugin is created?](https://github.com/helix-editor/helix/discussions/8314)
+[How to configure Helix](https://docs.helix-editor.com/configuration.html)
+[Language Server configuration](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations)
+[Easy issues to maybe contribute to helix](https://github.com/helix-editor/helix/labels/E-easy)
