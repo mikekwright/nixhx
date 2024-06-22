@@ -23,10 +23,24 @@
         system,
         ...
       }: let
-      in {
+      myHelix = (pkgs.writeShellApplication {
+        name = "hx";
+        #runtimeInputs = [ pkgs.helix ];
+        text = ''
+          ${pkgs.helix}/bin/hx --help
+        '';
+      });
+      in rec {
+        #results = (import ./helix { inherit inputs system; });
+
+        #_module.args.pkgs = import inputs.nixpkgs {
+        #  inherit system;
+        #  overlays = results.overlays; # (import ./helix { inherit inputs system; }).overlays; 
+        #};
+
         packages = with pkgs; {
           # Lets you run `nix run .` to start nixvim
-          default = helix;
+          default = myHelix;
         };
       };
     };
