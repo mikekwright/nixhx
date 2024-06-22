@@ -23,11 +23,27 @@
         system,
         ...
       }: let
+      helixConfig = pkgs.writeText "helix-config.toml" ''
+        theme = "onedark"
+
+        [editor]
+        line-number = "relative"
+        mouse = false
+
+        [editor.cursor-shape]
+        insert = "bar"
+        normal = "block"
+        select = "underline"
+
+        [editor.file-picker]
+        hidden = false
+      '';
+
       myHelix = (pkgs.writeShellApplication {
         name = "hx";
-        #runtimeInputs = [ pkgs.helix ];
         text = ''
-          ${pkgs.helix}/bin/hx --help
+          ls ${helixConfig}
+          ${pkgs.helix}/bin/hx -c ${helixConfig}
         '';
       });
       in rec {
