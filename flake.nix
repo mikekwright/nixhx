@@ -23,11 +23,43 @@
         system,
         ...
       }: let
+      originalHelix = pkgs.helix;
+
+      overriddenHelix = originalHelix.overrideAttrs (oldAttrs: {
+        name = "helix-overridden";
+
+        buildCommand = ''
+          set -euo pipefail
+
+          ${
+            # Copy original files, for each split-output (`out`, `dev` etc.).
+            # E.g. `${package.dev}` to `$dev`, and so on. If none, just "out".
+            # Symlink all files from the original package to here (`cp -rs`),
+            # to save disk space.
+            # We could alternatiively also copy (`cp -a --no-preserve=mode`).
+            pkgs.lib.concatStringsSep "\n"
+              (map
+                (outputName:
+                  ''
+                    echo "Copying output ${outputName}"
+                    set -x
+                    cp -rs --no-preserve=mode "${originalHelix.${outputName}}" "''$${outputName}"
+                    set +x
+                  ''
+                )
+                (oldAttrs.outputs or ["out"])
+              )
+          }
+
+          mv "$out/bin/hx" "$out/bin/hx-original"
+        '';
+      });
+
       myHelix = (pkgs.writeShellApplication {
         name = "hx";
         #runtimeInputs = [ pkgs.helix ];
         text = ''
-          ${pkgs.helix}/bin/hx --help
+          ${overriddenHelix}/bin/hx-original --help
         '';
       });
       in rec {
