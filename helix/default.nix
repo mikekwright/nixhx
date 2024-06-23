@@ -1,14 +1,10 @@
-{ inputs, system, ... }:
+{ pkgs, ... }:
 
-rec
 {
-  configPkgs = (import ./config.nix { inherit inputs system; });
+  config = (import ./config.nix { inherit pkgs; }).config;
 
-  overlays = [(self: super: {
-    helix = super.helix.overrideAttrs (oldAttrs: rec {
-      postInstall = oldAttrs.postInstall + ''
-        mv $out/bin/hx $out/bin/hx-raw
-      '';
-    });
-  })];
+  extraPackages = with pkgs; [
+    hello
+    rust-analyzer
+  ];
 }

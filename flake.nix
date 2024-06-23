@@ -23,40 +23,18 @@
         system,
         ...
       }: let
-      helixConfig = pkgs.writeText "helix-config.toml" ''
-        theme = "onedark"
-
-        [editor]
-        line-number = "relative"
-        mouse = false
-
-        [editor.cursor-shape]
-        insert = "bar"
-        normal = "block"
-        select = "underline"
-
-        [editor.file-picker]
-        hidden = false
-      '';
-
-      myHelix = (pkgs.writeShellApplication {
+      helixSetup = (import ./helix { inherit inputs system pkgs; });
+      helixScript = (pkgs.writeShellApplication {
         name = "hx";
+        runtimeInputs = helixSetup.extraPackages;
         text = ''
-          ls ${helixConfig}
-          ${pkgs.helix}/bin/hx -c ${helixConfig}
+          ls ${helixSetup.config}/config
+          ${pkgs.helix}/bin/hx -c ${helixSetup.config}/config/config.toml "$@"
         '';
       });
       in rec {
-        #results = (import ./helix { inherit inputs system; });
-
-        #_module.args.pkgs = import inputs.nixpkgs {
-        #  inherit system;
-        #  overlays = results.overlays; # (import ./helix { inherit inputs system; }).overlays; 
-        #};
-
         packages = with pkgs; {
-          # Lets you run `nix run .` to start nixvim
-          default = myHelix;
+          default = helixScript;
         };
       };
     };
