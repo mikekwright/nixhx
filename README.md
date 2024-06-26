@@ -11,3 +11,5 @@ and want to try to replicate that functionality for helix, which I think looks v
 [How to configure Helix](https://docs.helix-editor.com/configuration.html)
 [Language Server configuration](https://github.com/helix-editor/helix/wiki/Language-Server-Configurations)
 [Easy issues to maybe contribute to helix](https://github.com/helix-editor/helix/labels/E-easy)
+[Add a file picker to helix](https://www.youtube.com/watch?v=X9_z_gynvmM)
+
